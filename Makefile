@@ -27,6 +27,6 @@ clean:
 
 else
 	# called from kernel build system: just declare what our modules are
-	obj-m := process_list.o
+	obj-m := kprobe.o
 	
 endif

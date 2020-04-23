@@ -94,8 +94,8 @@ static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
 static int __init kprobe_init(void)
 {
 	int ret;
-	kp.pre_handler = handler_pre;
-	kp.post_handler = handler_post;
+//	kp.pre_handler = handler_pre;
+//	kp.post_handler = handler_post;
 	kp.fault_handler = handler_fault;
 
 	ret = register_kprobe(&kp);
