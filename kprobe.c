@@ -20,7 +20,8 @@
 #include <linux/stat.h> //needed for module arguments
 
 #define MAX_SYMBOL_LEN	64
-static char symbol[MAX_SYMBOL_LEN] = "_do_fork";
+//static char symbol[MAX_SYMBOL_LEN] = "_do_fork";
+static char symbol[MAX_SYMBOL_LEN] = "handle_mm_fault";
 module_param_string(symbol, symbol, sizeof(symbol), 0644);
 
 //
@@ -34,35 +35,37 @@ static struct kprobe kp = {
 };
 
 /* kprobe pre_handler: called just before the probed instruction is executed */
-/*
+
 static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 {
-#ifdef CONFIG_X86
-	pr_info("<%s> pre_handler: p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
-		p->symbol_name, p->addr, regs->ip, regs->flags);
-#endif
-#ifdef CONFIG_PPC
-	pr_info("<%s> pre_handler: p->addr = 0x%p, nip = 0x%lx, msr = 0x%lx\n",
-		p->symbol_name, p->addr, regs->nip, regs->msr);
-#endif
-#ifdef CONFIG_MIPS
-	pr_info("<%s> pre_handler: p->addr = 0x%p, epc = 0x%lx, status = 0x%lx\n",
-		p->symbol_name, p->addr, regs->cp0_epc, regs->cp0_status);
-#endif
-#ifdef CONFIG_ARM64
-	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx,"
-			" pstate = 0x%lx\n",
-		p->symbol_name, p->addr, (long)regs->pc, (long)regs->pstate);
-#endif
-#ifdef CONFIG_S390
-	pr_info("<%s> pre_handler: p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
-		p->symbol_name, p->addr, regs->psw.addr, regs->flags);
-#endif
-
+/*
+*/
 	// A dump_stack() here will give a stack backtrace
+/*	struct task_struct * task_list;
+	int index = 0; //counter for the for_each_process loop to index the analagous area  in data_list
+	for_each_process(task_list){
+		if(task_list[index].pid == current->pid){
+			printk(KERN_ALERT "Pre-Handler has been called for current->pid");
+
+		}
+		index++;
+	}
+*/	
+/*	if(current->pid > 5 && current->pid < 10000 ){
+		if(current->pid != 487){
+			printk(KERN_ALERT "Pre-Handler has been called for current->pid of: %d", current->pid);	
+		}
+		
+	}
+*/
+	if(current->pid == arg1 ){
+		printk(KERN_ALERT "This is the handler for handle_mm_fault() calls on process: %d", arg1);
+	}
+
+
 	return 0;
 }
-*/
+
 /* kprobe post_handler: called after the probed instruction is executed */
 
 /*
@@ -97,32 +100,33 @@ static void handler_post(struct kprobe *p, struct pt_regs *regs,
  * instruction within the pre- or post-handler, or when Kprobes
  * single-steps the probed instruction.
  */
+/*
 static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
 {
 	pr_info("fault_handler: p->addr = 0x%p, trap #%dn", p->addr, trapnr);
 
-	/* Return 0 because we don't handle the fault. */
+	// Return 0 because we don't handle the fault. 
 	return 0;
 }
-
+*/
 static int __init kprobe_init(void)
 {
 	int ret;
-	struct task_struct * task_list;
-	int index = 0; //counter for the for_each_process loop to index the analagous area  in data_list
+//	struct task_struct * task_list;
+//	int index = 0; //counter for the for_each_process loop to index the analagous area  in data_list
 
 
-//	kp.pre_handler = handler_pre;
+	kp.pre_handler = handler_pre;
 //	kp.post_handler = handler_post;
-	kp.fault_handler = handler_fault;
+//	kp.fault_handler = handler_fault;
 	printk(KERN_ALERT "mymodule: arg1 is: %d", arg1);
 
 //	char * new_buff = kmalloc(sizeof(char*)*6400, GFP_KERNEL);
-	
+/*	
 	for_each_process(task_list){
 //		if(task_list[index].pid < arg1){
-		printk(KERN_ALERT "current->pid is: %d", current->pid); 
-		if(task_list[index].pid == current->pid){
+//		printk(KERN_ALERT "current->pid is: %d", current->pid); 
+		if(task_list[index].state == 0){ //if state ==0 then it is TASK_RUNNING
 			//kp.pre_handler = handler_pre;
 			//kp.post_handler = handler_post;
 			printk(KERN_ALERT "Conditional handler can be invoked here");
@@ -131,6 +135,7 @@ static int __init kprobe_init(void)
 		index++;
 
 	}
+*/
 //	printk(KERN_ALERT "mymodule: Process count is: -- %d", index);
 //	printk(KERN_ALERT "mymodule: The value for kp.fault_handler is: ");	
 	ret = register_kprobe(&kp);
