@@ -27,6 +27,7 @@ module_param_string(symbol, symbol, sizeof(symbol), 0644);
 
 //
 static int arg1 = 0; // creating a default argument holder as 'static' for module interaction
+//static int process = 0; // creating a parameter to hold the process number
 module_param(arg1, int, 0);
 
 
@@ -60,9 +61,10 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 	}
 */
 	if(current->pid == arg1 ){
-		printk(KERN_ALERT "This is the handler for handle_mm_fault() calls on process: %d", arg1);
-		printk(KERN_ALERT "The page fault is on the page of long address: %lu", regs->si);
-		printk("Page fault logged at long address: %lu", regs->si);
+//		printk(KERN_ALERT "This is the handler for handle_mm_fault() calls on process: %d", arg1);
+//		printk(KERN_ALERT "The page fault is on the page of long address: %lu", regs->si);
+//		printk(KERN_ALERT "Page fault logged for process %d at long address: %lu",arg1, regs->si);//Also prints to Kernel Alert
+		printk("Page fault logged for process %d at long address: %lu",arg1, regs->si); //Only prints to log
 	}
 
 
