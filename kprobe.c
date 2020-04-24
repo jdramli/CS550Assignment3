@@ -11,13 +11,21 @@
  * whenever _do_fork() is invoked to create a new process.
  */
 
-#include <linux/kernel.h>
+#include <linux/kernel.h> 
 #include <linux/module.h>
-#include <linux/kprobes.h>
+#include <linux/kprobes.h> //needed for kprobes
+
+#include <linux/moduleparam.h> //needed for module arguments
+#include <linux/init.h> //needed for module arguments
+#include <linux/stat.h> //needed for module arguments
 
 #define MAX_SYMBOL_LEN	64
 static char symbol[MAX_SYMBOL_LEN] = "_do_fork";
 module_param_string(symbol, symbol, sizeof(symbol), 0644);
+
+//
+static int arg1 = 19; // creating a default argument holder as 'static' for module interaction
+module_param(arg1, int, 0);
 
 /* For each probe you need to allocate a kprobe structure */
 static struct kprobe kp = {
@@ -99,21 +107,22 @@ static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
 static int __init kprobe_init(void)
 {
 	int ret;
-	struct task_struct * task_list;
-	int index = 0; //counter for the for_each_process loop to index the analagous area  in data_list
+//	struct task_struct * task_list;
+//	int index = 0; //counter for the for_each_process loop to index the analagous area  in data_list
 
 
 //	kp.pre_handler = handler_pre;
 //	kp.post_handler = handler_post;
 	kp.fault_handler = handler_fault;
+	printk(KERN_ALERT "mymodule: arg1 is: %d", arg1);
 
 //	char * new_buff = kmalloc(sizeof(char*)*6400, GFP_KERNEL);
 	
-	for_each_process(task_list){
-		index++;
+//	for_each_process(task_list){
+//		index++;
 
-	}
-	printk(KERN_ALERT "mymodule: Process count is: -- %d", index);
+//	}
+//	printk(KERN_ALERT "mymodule: Process count is: -- %d", index);
 //	printk(KERN_ALERT "mymodule: The value for kp.fault_handler is: ");	
 	ret = register_kprobe(&kp);
 	if (ret < 0) {
@@ -121,6 +130,7 @@ static int __init kprobe_init(void)
 		return ret;
 	}
 	pr_info("Planted kprobe at %p\n", kp.addr);
+
 	return 0;
 }
 
