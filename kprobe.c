@@ -61,6 +61,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 */
 	if(current->pid == arg1 ){
 		printk(KERN_ALERT "This is the handler for handle_mm_fault() calls on process: %d", arg1);
+		printk(KERN_ALERT "The page fault is on the page of long address: %lu", regs->si);
 	}
 
 
