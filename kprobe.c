@@ -21,7 +21,8 @@
 
 #define MAX_SYMBOL_LEN	64
 //static char symbol[MAX_SYMBOL_LEN] = "_do_fork";
-static char symbol[MAX_SYMBOL_LEN] = "handle_mm_fault";
+static char symbol[MAX_SYMBOL_LEN] = "handle_mm_fault"; //This is where the handle_mm_fault function is specified to be trapped instead of "_do_fork"
+//static char symbol[MAX_SYMBOL_LEN] = "invalid_fake_xyzmakeup_instructiondwe";
 module_param_string(symbol, symbol, sizeof(symbol), 0644);
 
 //
