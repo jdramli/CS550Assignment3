@@ -62,6 +62,7 @@ static int handler_pre(struct kprobe *p, struct pt_regs *regs)
 	if(current->pid == arg1 ){
 		printk(KERN_ALERT "This is the handler for handle_mm_fault() calls on process: %d", arg1);
 		printk(KERN_ALERT "The page fault is on the page of long address: %lu", regs->si);
+		printk("Page fault logged at long address: %lu", regs->si);
 	}
 
 
@@ -121,7 +122,7 @@ static int __init kprobe_init(void)
 	kp.pre_handler = handler_pre;
 //	kp.post_handler = handler_post;
 //	kp.fault_handler = handler_fault;
-	printk(KERN_ALERT "mymodule: arg1 is: %d", arg1);
+	printk(KERN_ALERT "Searching for handle_mm_faults of process designated by arg1, which is: %d", arg1);
 
 //	char * new_buff = kmalloc(sizeof(char*)*6400, GFP_KERNEL);
 /*	
