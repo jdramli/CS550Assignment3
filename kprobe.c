@@ -1,4 +1,4 @@
-
+//sysbench --test=CPU --cpu-max-prime=200000sysbench --test=cpu --cpu-max-prime=20000 run &
 // SPDX-License-Identifier: GPL-2.0-only
 /*
  * NOTE: This example is works on x86 and powerpc.
